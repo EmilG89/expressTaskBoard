@@ -1,8 +1,8 @@
 import express from 'express';
 import { engine } from 'express-handlebars';
 import * as path from 'path';
+import * as taskActions from './database.js';
 const PORT = 4001;
-import sqlite3 from 'sqlite3';
 
 const app = express();
 
@@ -14,34 +14,18 @@ app.use(express.static(path.join(import.meta.dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-const db = new sqlite3.Database('./data.db');
-
-const addTaskToDB = (params) => {
-    if (params.length === 3) {
-        try {
-            db.run('INSERT INTO tasks(header, description, color) VALUES(?,?,?)', params);
-            console.log('data added');
-        } catch (err) {
-            console.log('Can not add data to DB.');
-        } finally {
-            db.close();
-        }
-    } else {
-        console.log('missing parameters');
-        return;
-    }
-};
-
 app.get('/', (req, res) => {
-    res.render('index');
+    const allTasks = taskActions.getAllTasks;
+    res.render('index', {allTasks: allTasks});
 });
 
 app.post('/', (req, res) => {
+    console.log('here');
     const { Header, Description } = req.body;
     console.log(req.body);
-    addTaskToDB([Header, Description, 'white']);
+    taskActions.addTask([Header, Description, 'white']);
     res.redirect('/');
-})
+});
 
 app.listen(PORT, () => {
     console.log(`listening to http://localhost:${PORT}`);
