@@ -11,8 +11,21 @@ const headerInput = document.getElementById('headerInput');
 const descriptionInput = document.getElementById('descriptionInput');
 const message = document.getElementById('message');
 
-// Fetch tasks from browsers local storage
-const tasks = JSON.parse(localStorage.getItem('tasks'));
+const getTasks = async () => {
+    try {
+        const response = await fetch('/api/get-all-tasks');
+        if (response.ok) {
+            const jsonResponse = await response.json();
+            return jsonResponse.allTasks;
+        } else {
+        throw new Error('Request failed!');
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+const tasks = await getTasks();
 
 // If there were tasks in local storage, each task will be added to
 // browser window one by one.
@@ -64,7 +77,7 @@ addTaskButton.addEventListener('click', (event) => {
 });
 
 // function for adding task from user input and from local storage
-function addTask(task) {
+async function addTask(task) {
     // collor palette for tak backgrouds
     const colorPalette = ['#E2DAF1', '#EFD6E8', '#F6D5DC', '#F7D6D0', '#F1D9C8', '#E6DDC5', '#D8E1C9'];
     
@@ -72,6 +85,31 @@ function addTask(task) {
     let taskHeader = headerInput.value;
     let taskDescription = descriptionInput.value;
     let taskColor = colorPalette[Math.floor(Math.random()*(colorPalette.length+1))];
+
+    // Call API to add task data to db
+    if (taskHeader && taskDescription && taskColor) {
+        try {
+            const response = await fetch('/api/add-task', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    header: taskHeader,
+                    description: taskDescription,
+                    color: taskColor
+                })
+            });
+            if (response.ok) {
+                const jsonResponse = await response.json();
+                console.log(jsonResponse.message);
+            } else {
+                throw new Error('Request failed!');
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     if (task) {
         taskHeader = task.header;
@@ -98,7 +136,6 @@ function addTask(task) {
     // Add action to task child element that removes task and updates local storage
     completeMark.onclick = () => {
         taskDiv.remove();
-        updateLocalStorage();
     };
 
     // Place all task container elements inside task container
@@ -114,25 +151,4 @@ function addTask(task) {
     descriptionInput.value = '';
 
     // Update local storage 
-    updateLocalStorage();
-}
-
-
-// function for updating local storage
-function updateLocalStorage() {
-    // Find elements containing task relevant data
-    const taskElements = document.querySelectorAll('.taskHeader, .taskDescription');
-    const taskArray = [];
-
-    // Lopp through pair of task child elements that hold header, header description 
-    // and color in which task contaoner should be colored
-    for (let i = 0; i < taskElements.length; i+=2) {
-        taskArray.push({
-            color: taskElements[i].style.backgroundColor,
-            header: taskElements[i].innerText,
-            description: taskElements[i+1].innerText,
-        });
-    }
-    // Add task data to local storage under one key: tasks
-    localStorage.setItem('tasks', JSON.stringify(taskArray));
 }
