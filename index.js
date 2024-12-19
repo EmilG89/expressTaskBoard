@@ -15,13 +15,17 @@ app.get('/', (req, res) => {
 
 app.get('/api/get-all-tasks', async (req, res) => {
     const allTasks = await taskActions.getAllTasks();
-    res.json({ allTasks });
+    res.status(200).json({ allTasks });
 });
 
-app.post('/api/add-task', async (req, res) => {
+app.post('/api/add-task', async (req, res, next) => {
     const { header, description, color } = req.body;
-    await taskActions.addTask([header, description, color]);
-    res.json({message: 'Task added.'});
+    const response = await taskActions.addTask([header, description, color]);
+    console.log(response);
+    if (response) {
+        res.status(201).json({ message: response });
+    }
+    res.status(400).json({ error: '400 Bad Request' });
 });
 
 app.listen(PORT, () => {

@@ -9,7 +9,7 @@ main {
 /* Task board that will hold all task */
 #taskBoard {
     display: grid;
-    grid-template-columns: 200px 200px 200px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
     grid-auto-rows: 200px;
 }
@@ -17,13 +17,16 @@ main {
 .task {
     display: inline-grid;
     contain: content;
+    width: 200px;
+    height: 200px;
     background-color: blanchedalmond;
     padding: 20px 20px;
     border-radius: 10px;
-    box-shadow: 2px 2px 5px black;
+    box-shadow: 2px 2px 5px #777;
+    transition: transform .5s;
 }
 .task:hover {
-    box-shadow: inset 0 0 10px black;
+    transform: scale(1.05);
 }
 /* individual task container that opens new task form */
 #newTask {
@@ -43,12 +46,38 @@ main {
     height: 100%;
     background-color: rgba(180, 180, 180, 0.5);
 }
+/* Loader ring */
+#loader {
+    display: none;
+    z-index: 2;
+    margin: 20% auto;
+    border: 10px solid #777;
+    border-top: 10px solid #333;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    animation: spin 2s linear infinite;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+/* Message or error box for Adding task */
+#response {
+    display: none;
+    z-index: 2;
+    margin: auto;
+    padding: 10px;
+    width: 200px;
+    font-size: small;
+    background-color: rgba(180, 180, 180, 0.8);
+}
 /* form contaner for creating new task  */
 #newTaskForm {
     display: none;
     z-index: 2;
     background-color: aliceblue;
-    margin: 10% auto;
+    margin: 20% auto;
     border-radius: 10px;
     width: 80%;
     max-width: 800px;
@@ -116,9 +145,9 @@ textarea {
 }
 /* button to delete task is hidden outside contain container */
 .task > button {
-    position: relative;
-    left: 180px;
-    bottom: -50px;
+    position: absolute;
+    right: -35px;
+    bottom: -35px;
     width: 40px;
     height: 40px;
     border: 0;
@@ -130,11 +159,11 @@ textarea {
 }
 .task:hover > button {
     opacity: 1;
-    transform: translate(-25px, -25px);
+    transform: translate(-20px, -20px);
 }
 .task > button:hover {
     background-color: indianred;
     cursor: pointer;
     box-shadow: 0 0 7px indianred;
-    transform: translate(-35px, -35px);
+    transform: translate(-30px, -30px);
 }

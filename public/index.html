@@ -8,12 +8,15 @@
         <link rel="stylesheet" href="styles.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css" />
+        <script defer type="module" src="modules/task-operations.js"></script>
         <script defer type="module" src="init.js"></script>
     </head>
 
     <body>
         <main id="backgroud">
             <div id="createTaskModal">
+                <div id="loader"></div>
+                <h4 id="response"></h4>
                 <div id="newTaskForm">
                     <div style="width: 100%">
                     <label for="Header" style="display: inline-block"><h3>Header: </h3></label>

@@ -13,11 +13,11 @@ const getAllTasks = () => {
 
 const addTask = (params) => {
     return new Promise((resolve, reject) => {
-        db.run('INSERT INTO tasks (header, description, color) VALUES (?,?,?)', params, (err) => {
+        db.run('INSERT INTO tasks (header, description, color) VALUES (?,?,?)', params, (err, row) => {
             if (err) 
                 reject(err);
             else
-                resolve();
+                resolve(`Task: ${params[0]} added.`);
         });
     });
 };

@@ -1,9 +1,13 @@
+import { getAllTasks, addTask } from './modules/task-operations.js';
+
 //localStorage.clear();
 // Import elements that will be used and populated
 const background = document.getElementById('backgroud');
 const taskBoard = document.getElementById('taskBoard');
 const newTask = document.getElementById('newTask');
 const createTaskModal = document.getElementById('createTaskModal');
+const loader = document.getElementById('loader');
+const responseDiv = document.getElementById('response');
 const newTaskForm = document.getElementById('newTaskForm');
 const addTaskButton = document.getElementById('addTask');
 const cancelButton = document.getElementById('cancel');
@@ -11,26 +15,18 @@ const headerInput = document.getElementById('headerInput');
 const descriptionInput = document.getElementById('descriptionInput');
 const message = document.getElementById('message');
 
-const getTasks = async () => {
-    try {
-        const response = await fetch('/api/get-all-tasks');
-        if (response.ok) {
-            const jsonResponse = await response.json();
-            return jsonResponse.allTasks;
-        } else {
-        throw new Error('Request failed!');
-        }
-    } catch (error) {
-        console.log(error);
-    }
-};
+createTaskModal.style.display = 'block';
+loader.style.display = 'block';
+let tasks = await getAllTasks();
+setTimeout(() => {
+    createTaskModal.style.display = 'none';
+    loader.style.display = 'none';
+}, 1000);
 
-const tasks = await getTasks();
-
-// If there were tasks in local storage, each task will be added to
+// If there were tasks in db, each task will be added to
 // browser window one by one.
 if (tasks) {
-    tasks.forEach(task => addTask(task));
+    tasks.forEach(task => constructTaskElement(task));
 }
 
 // Listen if newTask div is cliecked. When clicked container for creating new task
@@ -73,11 +69,11 @@ addTaskButton.addEventListener('click', (event) => {
     }
     createTaskModal.style.display = 'none';
     newTaskForm.style.display = 'none';
-    addTask();
+    constructTaskElement();
 });
 
 // function for adding task from user input and from local storage
-async function addTask(task) {
+async function constructTaskElement(task) {
     // collor palette for tak backgrouds
     const colorPalette = ['#E2DAF1', '#EFD6E8', '#F6D5DC', '#F7D6D0', '#F1D9C8', '#E6DDC5', '#D8E1C9'];
     
@@ -88,27 +84,15 @@ async function addTask(task) {
 
     // Call API to add task data to db
     if (taskHeader && taskDescription && taskColor) {
-        try {
-            const response = await fetch('/api/add-task', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    header: taskHeader,
-                    description: taskDescription,
-                    color: taskColor
-                })
-            });
-            if (response.ok) {
-                const jsonResponse = await response.json();
-                console.log(jsonResponse.message);
-            } else {
-                throw new Error('Request failed!');
-            }
-        } catch (error) {
-            console.log(error);
-        }
+        createTaskModal.style.display = 'block';
+        loader.style.display = 'block';
+        const response = await addTask({header: taskHeader, description: taskDescription, color: taskColor});
+        responseDiv.style.display = 'block';
+        responseDiv.innerHTML = response.message;
+        setTimeout(() => {
+            createTaskModal.style.display = 'none';
+            loader.style.display = 'none';
+        }, 1000);
     }
 
     if (task) {
