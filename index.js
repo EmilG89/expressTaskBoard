@@ -14,18 +14,36 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/get-all-tasks', async (req, res) => {
-    const allTasks = await taskActions.getAllTasks();
-    res.status(200).json({ allTasks });
+    try {
+        const allTasks = await taskActions.getAllTasks();
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        res.status(200).json({ allTasks });
+    } catch {
+        res.status(400).json({ error: '400 Bad Request' });
+    }
 });
 
-app.post('/api/add-task', async (req, res, next) => {
+app.post('/api/add-task', async (req, res) => {
     const { header, description, color } = req.body;
-    const response = await taskActions.addTask([header, description, color]);
-    console.log(response);
-    if (response) {
-        res.status(201).json({ message: response });
+    try{
+        const addedTaskId = await taskActions.addTask([header, description, color]);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        res.status(201).json({ message: `Task ${header} added`, id: addedTaskId });
+    } catch {
+        res.status(400).json({ error: '400 Bad Request' });
     }
-    res.status(400).json({ error: '400 Bad Request' });
+});
+
+app.delete('/api/delete-task', async (req, res) => {
+    const { id } = req.body;
+    try {
+        const response = await taskActions.deleteTask(id);
+        await new Promise(resolve => SetTimeout(resolve, 1000));
+        res.status(200).json({ message: response });
+    } catch {
+        console.log('here');
+        res.status(400).json({ error: '400 Bad Request' });
+    }
 });
 
 app.listen(PORT, () => {

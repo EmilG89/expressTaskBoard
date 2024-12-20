@@ -13,16 +13,33 @@ const getAllTasks = () => {
 
 const addTask = (params) => {
     return new Promise((resolve, reject) => {
-        db.run('INSERT INTO tasks (header, description, color) VALUES (?,?,?)', params, (err, row) => {
-            if (err) 
+        db.run('INSERT INTO tasks (header, description, color) VALUES (?,?,?)', params, function (err) {
+            if (err) {
                 reject(err);
-            else
-                resolve(`Task: ${params[0]} added.`);
+            }
+            else {
+                const id = this.lastID;
+                resolve(id);
+            }
         });
     });
 };
 
+const deleteTask = (id) => {
+    return new Promise((resolve, reject) => {
+        db.run('DELETE FROM tasks WHERE id = (?)', id, (err) => {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve('Task deleted');
+            }
+        });
+    });
+}
+
 export {
+    getAllTasks,
     addTask,
-    getAllTasks
+    deleteTask
 }

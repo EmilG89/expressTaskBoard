@@ -18,15 +18,17 @@ main {
     display: inline-grid;
     contain: content;
     width: 200px;
-    height: 200px;
     background-color: blanchedalmond;
     padding: 20px 20px;
     border-radius: 10px;
-    box-shadow: 2px 2px 5px #777;
-    transition: transform .5s;
+    box-shadow: 2px 2px 5px #ccc;
+    backface-visibility: hidden;
+    transition: transform .15s;
 }
 .task:hover {
-    transform: scale(1.05);
+    transform: scale(1.05) translateZ(0);
+    backface-visibility: hidden;
+    cursor: pointer;
 }
 /* individual task container that opens new task form */
 #newTask {
@@ -38,6 +40,8 @@ main {
 /* form background */
 #createTaskModal {
     display: none;
+    align-items: center;
+    justify-content: center;
     position: fixed;
     top: 0;
     left: 0;
@@ -50,7 +54,6 @@ main {
 #loader {
     display: none;
     z-index: 2;
-    margin: 20% auto;
     border: 10px solid #777;
     border-top: 10px solid #333;
     border-radius: 50%;
@@ -62,22 +65,11 @@ main {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
-/* Message or error box for Adding task */
-#response {
-    display: none;
-    z-index: 2;
-    margin: auto;
-    padding: 10px;
-    width: 200px;
-    font-size: small;
-    background-color: rgba(180, 180, 180, 0.8);
-}
 /* form contaner for creating new task  */
 #newTaskForm {
     display: none;
     z-index: 2;
     background-color: aliceblue;
-    margin: 20% auto;
     border-radius: 10px;
     width: 80%;
     max-width: 800px;
@@ -130,6 +122,7 @@ textarea {
 }
 /* created task header element properties */
 .taskHeader {
+    position: relative;
     margin: 0;
     padding: 0;
     height: 20px;
