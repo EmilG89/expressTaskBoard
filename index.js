@@ -41,6 +41,7 @@ app.get('/', authorize, (req, res) => {
 });
 
 app.get('/login', (req, res) => {
+    console.log(req.session.id);
     res.sendFile('login.html', { root: path.join(import.meta.dirname, '/public') });
 });
 
@@ -51,11 +52,10 @@ app.post('/api/login', async (req, res) => {
         req.session.user = user.id;
         res.cookie('sessionID', req.sessionID);
         await new Promise(resolve => setTimeout(resolve, 1000));
-        res.status(200);
-        res.redirect('/login');
+        res.status(200).json({ message: user.username });
     } catch (e) {
         console.log(e)
-        res.status(400).json({error: '400 Bad Request'});
+        res.status(400).json({error: 'Could not log in!'});
     }
 });
 
@@ -94,12 +94,12 @@ app.delete('/api/delete-task', authorize, async (req, res) => {
     }
 });
 
-app.get('/api/logout', authorize, (req, res) => {
-    req.session.destroy(() => {
-        res.clearCookie('sessionID');
-        res.status(200);
-        res.redirect('/login');
+app.get('/api/logout', (req, res) => {
+    req.session.destroy((err) => {
+        console.log(err);
     });
+    res.clearCookie('sessionID');
+    res.status(200).redirect('/');
 });
 
 app.listen(PORT, () => {

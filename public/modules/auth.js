@@ -8,8 +8,8 @@ loginButton.addEventListener('click', async (event) => {
     event.preventDefault();
     const u = username.value;
     const p  = password.value;
-    await login(u, p);
-    console.log('welcome');
+    const response = await login(u, p);
+    console.log('welcome ' + response.message);
 });
 
 logoutButton.addEventListener('click', async (event) => {
@@ -37,7 +37,7 @@ async function login (u, p){
         }
         const errorMessage = await response.json();
         console.log(errorMessage);
-        throw new Error('Request failed!', errorMessage);
+        throw new Error('Request failed!', errorMessage.error);
 
     } catch (error) {
         console.log(error);
@@ -46,7 +46,11 @@ async function login (u, p){
 
 async function logout() {
     try {
-        const response = await fetch('/api/logout');
+        const response = await fetch('/api/logout', {
+            method: 'GET',
+            credentials: 'include',
+            redirect: 'follow'
+        });
         if (response.ok) {
             return;
         } 

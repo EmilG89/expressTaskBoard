@@ -4,6 +4,8 @@ import { constructTaskElement } from './modules/task-construct.js';
 
 // Import color palette for task constructor
 const colorPalette = domElement.colorPalette;
+console.log(document.cookie);
+
 
 // Get all task from DB
 const tasks = await getAllTasks();
