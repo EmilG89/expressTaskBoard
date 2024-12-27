@@ -1,4 +1,4 @@
-import { getAllTasks, addTask, deleteTask } from './modules/task-operations.js';
+import { getAllTasks, addTask } from './modules/task-operations.js';
 import * as domElement from './modules/dom-elements.js';
 import { constructTaskElement } from './modules/task-construct.js';
 
@@ -18,7 +18,7 @@ if (tasks) {
 // will appear
 domElement.newTask.addEventListener('click', (event) => {
     event.preventDefault();
-    domElement.createTaskModal.style.display = 'block';
+    domElement.createTaskModal.style.display = 'flex';
     domElement.newTaskForm.style.display = 'block';
 });
 
@@ -35,8 +35,48 @@ domElement.addTaskButton.addEventListener('click', async (event) => {
     event.preventDefault();
     domElement.message.innerHTML = '';
 
-    // Create directory taht holds required field objects with properties
-    let requiredFields = {
+    // Validate that user input meets app requirements
+    const validated = await validateInput();
+
+    // Add validated data to db and receive back id of newly created object
+    const response = await addTask({
+        header: validated.header.value, 
+        description: validated.description.value, 
+        color: validated.color.value
+    });
+
+    if (response.error) {
+        alert(response.error);
+        return;
+    } else {
+        alert(response.message)
+    }
+
+    // Clear out input fields
+    domElement.headerInput.value = '';
+    domElement.descriptionInput.value = '';
+    
+    // use validated data and id of new object to create html element and disply it on screen
+    constructTaskElement({ 
+        id: response.id,
+        header: validated.header.value, 
+        description: validated.description.value, 
+        color: validated.color.value 
+    });
+});
+
+domElement.logoutButton.addEventListener('click', async (event) => {
+    console.log('logout from main');
+    event.preventDefault();
+    await logout();
+    console.log('user is logged out');
+});
+
+async function validateInput() {
+    // Consider using switch case method to use validateInput function for task, login, register and other validation
+
+    // Create directory that holds required field objects with properties
+    const requiredFields = {
         header: {
             value: domElement.headerInput.value,
             length: 4
@@ -57,29 +97,6 @@ domElement.addTaskButton.addEventListener('click', async (event) => {
             return;
         }
     }
-    // Add validated data to db and receive back id of newly created object
-    const response = await addTask({
-        header: requiredFields.header.value, 
-        description: requiredFields.description.value, 
-        color: requiredFields.color.value
-    });
 
-    if (response.error) {
-        alert(response.error);
-        return;
-    } else {
-        alert(response.message)
-    }
-
-    // Clear out input fields
-    domElement.headerInput.value = '';
-    domElement.descriptionInput.value = '';
-    
-    // use validated data and id of new object to create html element and disply it on screen
-    constructTaskElement({ 
-        id: response.id,
-        header: requiredFields.header.value, 
-        description: requiredFields.description.value, 
-        color: requiredFields.color.value 
-    });
-});
+    return requiredFields;
+}

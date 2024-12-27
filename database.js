@@ -28,12 +28,21 @@ const addTask = (params) => {
 const deleteTask = (id) => {
     return new Promise((resolve, reject) => {
         db.run('DELETE FROM tasks WHERE id = (?)', id, (err) => {
-            if (err) {
+            if (err)
                 reject(err);
-            }
-            else {
+            else
                 resolve('Task deleted');
-            }
+        });
+    });
+}
+
+const getUser = (username, password) => {
+    return new Promise((resolve, reject) => {
+        db.all('SELECT * FROM users WHERE username = (?) AND password = (?)', [username, password], (err, row) => {
+            if (err)
+                reject(err);
+            else
+                resolve(row[0]);
         });
     });
 }
@@ -41,5 +50,6 @@ const deleteTask = (id) => {
 export {
     getAllTasks,
     addTask,
-    deleteTask
+    deleteTask,
+    getUser
 }

@@ -9,6 +9,7 @@ const getAllTasks = async () => {
         const response = await fetch('/api/get-all-tasks');
         if (response.ok) {
             const jsonResponse = await response.json();
+            console.log(jsonResponse);
             return jsonResponse.allTasks;
         } else {
         throw new Error('Request failed!');
