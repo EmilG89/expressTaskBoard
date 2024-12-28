@@ -1,7 +1,8 @@
 import express from 'express';
 import * as path from 'path';
 import * as dbActions from './database.js';
-import session from 'express-session';
+import jwt from 'jsonwebtoken';
+
 
 const PORT = 4001;
 
@@ -11,53 +12,51 @@ app.use(express.static(path.join(import.meta.dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-// Session cookie instantiation
-app.use(session({
-    secret: 'Emils_secret_from_env',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        maxAge: 3600000,
-        httpOnly: true,
-        secure: false
-    }
-}));
 
-// Authorization middleware
-function authorize(req, res, next) {
-    console.log('here1');
-    if (req.session.user) { 
-        console.log('here2'); 
-        next();
+// Authorization middleware with JWT validation
+const authorize = (req, res, next) => {
+    const token = req.headers['authorization'];
+    if (!token) {
+      return res.redirect('/login');
     }
-    else {
-        console.log('here3');
-        res.redirect('/login');
-    }
-}
+  
+    jwt.verify(token, 'secret', (err) => {
+      if (err) {
+        console.log(err);
+        return res.redirect('/login');
+      }
+      next();
+    });
+};
 
-app.get('/', authorize, (req, res) => {
-    res.sendFile('index');
+
+
+app.get('/', (req, res) => {
+    res.sendFile('home.html', { root: path.join(import.meta.dirname, '/public') });
 });
+
+
 
 app.get('/login', (req, res) => {
-    console.log(req.session.id);
     res.sendFile('login.html', { root: path.join(import.meta.dirname, '/public') });
 });
+
+
 
 app.post('/api/login', async (req, res) => {
     const {username, password} = req.body;
     try {
         const user = await dbActions.getUser(username, password);
-        req.session.user = user.id;
-        res.cookie('sessionID', req.sessionID);
+        const token = jwt.sign({ username: user.username }, 'secret', { expiresIn: '1h' });
         await new Promise(resolve => setTimeout(resolve, 1000));
-        res.status(200).json({ message: user.username });
+        res.status(200).json({ message: user.username, token });
     } catch (e) {
         console.log(e)
         res.status(400).json({error: 'Could not log in!'});
     }
 });
+
+
 
 app.get('/api/get-all-tasks', authorize, async (req, res) => {
     try {
@@ -69,6 +68,8 @@ app.get('/api/get-all-tasks', authorize, async (req, res) => {
         res.status(400).json({ error: '400 Bad Request' });
     }
 });
+
+
 
 app.post('/api/add-task', authorize, async (req, res) => {
     const { header, description, color } = req.body;
@@ -82,6 +83,8 @@ app.post('/api/add-task', authorize, async (req, res) => {
     }
 });
 
+
+
 app.delete('/api/delete-task', authorize, async (req, res) => {
     const { id } = req.body;
     try {
@@ -94,13 +97,14 @@ app.delete('/api/delete-task', authorize, async (req, res) => {
     }
 });
 
+
+
 app.get('/api/logout', (req, res) => {
-    req.session.destroy((err) => {
-        console.log(err);
-    });
-    res.clearCookie('sessionID');
-    res.status(200).redirect('/');
+    res.clearCookie('authorization');
+    res.status(200).json({ message: 'logged out.' });
 });
+
+
 
 app.listen(PORT, () => {
     console.log(`listening to http://localhost:${PORT}`);

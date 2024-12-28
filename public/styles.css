@@ -1,5 +1,6 @@
 * {
     box-sizing: border-box;
+    font-family: Roboto;
 }
 /* position main container elemets and give fonts*/ 
 main {
@@ -8,10 +9,51 @@ main {
 }
 #navbar {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    grid-template-columns: repeat(3, max-content);
     gap: 10px;
     grid-auto-rows: 40px;
 }
+.navButton {
+    text-decoration: none;
+    display: inline-grid;
+    font-size: medium;
+    padding: 5px;
+    border-bottom: #777;
+    list-style: none;
+}
+
+/* Login segment */
+#loginPageBackground {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 90vh;
+}
+#loginForm {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    width: 200px;
+    height: 200px;
+    background-color: #F6D5DC;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px #ccc;
+}
+#loginForm label {
+    font-size: medium;
+    color: #777;
+    margin-bottom: 3px;
+}
+#loginForm input {
+    width: 85%;
+    font-size: medium;
+    color: #777;
+    margin-bottom: 3px;
+}
+
 /* Task board that will hold all task */
 #taskBoard {
     display: grid;
@@ -52,8 +94,8 @@ main {
     top: 0;
     left: 0;
     z-index: 1;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background-color: rgba(180, 180, 180, 0.5);
 }
 /* Loader ring */

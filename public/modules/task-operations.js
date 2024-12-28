@@ -2,11 +2,18 @@ import * as domElement from './dom-elements.js';
 
 const getAllTasks = async () => {
 
+    await checkCookieExp();
     domElement.createTaskModal.style.display = 'flex';
     domElement.loader.style.display = 'block';
 
     try {
-        const response = await fetch('/api/get-all-tasks');
+        const response = await fetch('/api/get-all-tasks', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': await getCookie('authorization'),
+            }
+        });
         if (response.ok) {
             const jsonResponse = await response.json();
             console.log(jsonResponse);
@@ -24,6 +31,7 @@ const getAllTasks = async () => {
 
 const addTask = async (params) => {
 
+    //checkCookieExp();
     domElement.newTaskForm.style.display = 'none';
     domElement.loader.style.display = 'block';
 
@@ -31,7 +39,8 @@ const addTask = async (params) => {
         const response = await fetch('/api/add-task', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'authorization': await getCookie('authorization'),
             },
             body: JSON.stringify({
                 header: params.header,
@@ -55,11 +64,14 @@ const addTask = async (params) => {
 };
 
 const deleteTask = async (id) => {
+    
+    //checkCookieExp();
     try {
         const response = await fetch('/api/delete-task', {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'authorization': await getCookie('authorization'),
             },
             body: JSON.stringify({
                 id: id
@@ -76,6 +88,29 @@ const deleteTask = async (id) => {
         console.log(error);
     }
 };
+
+async function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for(let i = 0; i <ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+}
+
+async function checkCookieExp() {
+    let expiration = await getCookie('expires');
+    console.log(expiration);
+    return;
+}
+
 
 
 export {

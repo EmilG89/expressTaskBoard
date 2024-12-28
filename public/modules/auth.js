@@ -10,6 +10,7 @@ loginButton.addEventListener('click', async (event) => {
     const p  = password.value;
     const response = await login(u, p);
     console.log('welcome ' + response.message);
+    window.location.href = '/';
 });
 
 logoutButton.addEventListener('click', async (event) => {
@@ -33,6 +34,8 @@ async function login (u, p){
 
         if(response.ok) {
             const jsonResponse = await response.json();
+            console.log(jsonResponse.token);
+            await setCookie('authorization', jsonResponse.token, 1);
             return jsonResponse;
         }
         const errorMessage = await response.json();
@@ -46,12 +49,10 @@ async function login (u, p){
 
 async function logout() {
     try {
-        const response = await fetch('/api/logout', {
-            method: 'GET',
-            credentials: 'include',
-            redirect: 'follow'
-        });
+        const response = await fetch('/api/logout');
         if (response.ok) {
+            const jsonResponse = await response.json();
+            console.log(jsonResponse.message);
             return;
         } 
         console.log('could not log out');
@@ -61,3 +62,10 @@ async function logout() {
         console.log(error);
     }
 }
+
+async function setCookie(cname, cvalue, exhours) {
+    const d = new Date();
+    d.setTime(d.getTime() + (exhours*60*60*1000));
+    let expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+  }
