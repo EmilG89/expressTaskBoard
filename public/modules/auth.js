@@ -2,6 +2,9 @@ const username = document.getElementById('username');
 const password = document.getElementById('password');
 const loginButton = document.getElementById('login');
 const logoutButton = document.getElementById('logoutButton');
+// import {getDom} from './dom-elements.js';
+
+// const loginelements = getDom(login);
 
 // listen if login button is clicked on login page
 loginButton.addEventListener('click', async (event) => {
@@ -9,7 +12,7 @@ loginButton.addEventListener('click', async (event) => {
     const u = username.value;
     const p  = password.value;
     const response = await login(u, p);
-    console.log('welcome ' + response.message);
+    console.log('welcome ' + response);
     window.location.href = '/';
 });
 
@@ -36,18 +39,17 @@ async function login (u, p){
             const jsonResponse = await response.json();
             console.log(jsonResponse.token);
             await setCookie('authorization', jsonResponse.token, 1);
-            return jsonResponse;
+            return jsonResponse.message;
         }
         const errorMessage = await response.json();
         console.log(errorMessage);
         throw new Error('Request failed!', errorMessage.error);
-
     } catch (error) {
         console.log(error);
     }
 }
 
-async function logout() {
+export async function logout() {
     try {
         const response = await fetch('/api/logout');
         if (response.ok) {
@@ -68,4 +70,4 @@ async function setCookie(cname, cvalue, exhours) {
     d.setTime(d.getTime() + (exhours*60*60*1000));
     let expires = "expires="+ d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-  }
+}

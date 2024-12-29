@@ -1,11 +1,11 @@
 import { getAllTasks, addTask } from './modules/task-operations.js';
 import * as domElement from './modules/dom-elements.js';
 import { constructTaskElement } from './modules/task-construct.js';
+//import { logout } from './modules/auth.js';
 
 // Import color palette for task constructor
 const colorPalette = domElement.colorPalette;
 console.log(document.cookie);
-
 
 // Get all task from DB
 const tasks = await getAllTasks();
@@ -68,7 +68,6 @@ domElement.addTaskButton.addEventListener('click', async (event) => {
 });
 
 domElement.logoutButton.addEventListener('click', async (event) => {
-    console.log('logout from main');
     event.preventDefault();
     await logout();
     console.log('user is logged out');

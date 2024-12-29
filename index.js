@@ -15,7 +15,7 @@ app.use(express.urlencoded({extended: true}));
 
 // Authorization middleware with JWT validation
 const authorize = (req, res, next) => {
-    const token = req.headers['authorization'];
+    const token = req.headers['authorization'];// || getCookie(req, 'authprization');
     if (!token) {
       return res.redirect('/login');
     }

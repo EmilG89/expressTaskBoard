@@ -2,7 +2,7 @@ import * as domElement from './dom-elements.js';
 
 const getAllTasks = async () => {
 
-    await checkCookieExp();
+    //await checkCookieExp();
     domElement.createTaskModal.style.display = 'flex';
     domElement.loader.style.display = 'block';
 
@@ -106,7 +106,7 @@ async function getCookie(cname) {
 }
 
 async function checkCookieExp() {
-    let expiration = await getCookie('expires');
+    let cookie = await getCookie('authorization');
     console.log(expiration);
     return;
 }

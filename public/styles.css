@@ -10,7 +10,7 @@ main {
 #navbar {
     display: grid;
     grid-template-columns: repeat(3, max-content);
-    gap: 10px;
+    gap: 20px;
     grid-auto-rows: 40px;
 }
 .navButton {
@@ -18,8 +18,7 @@ main {
     display: inline-grid;
     font-size: medium;
     padding: 5px;
-    border-bottom: #777;
-    list-style: none;
+    border-bottom: 1px solid #777;
 }
 
 /* Login segment */
