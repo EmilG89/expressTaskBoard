@@ -1,24 +1,42 @@
 * {
     box-sizing: border-box;
     font-family: Roboto;
+    margin: 0;
+    padding: 0;
 }
 /* position main container elemets and give fonts*/ 
 main {
     padding: 20px 20px;
     font-family: Roboto;
 }
+
+/* Header with page navigation */
+header {
+    padding: 10px 10px;
+    background-color:#eee;
+    height: 80px;
+    width: 100%;
+}
 #navbar {
     display: grid;
-    grid-template-columns: repeat(3, max-content);
-    gap: 20px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
     grid-auto-rows: 40px;
 }
+
 .navButton {
     text-decoration: none;
-    display: inline-grid;
-    font-size: medium;
+    contain: content;
     padding: 5px;
-    border-bottom: 1px solid #777;
+    color: #777;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: all 0.5s;
+}
+.navButton:hover {
+    border: 1px solid #fff;
+    color: #fff;
+    cursor: pointer;
 }
 
 /* Login segment */

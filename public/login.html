@@ -12,11 +12,27 @@
     </head>
 
     <body>
-        <div id="navBar">
-            <a href="/" class="navButton">Home</a>
-            <a href="/login" class="navButton">Log in</a>
-            <button id="logoutButton">Logout</button>
-        </div>
+        <header>
+            <div id="navBar">
+                <div>
+                    <a href="/" class="navButton">
+                        <span class="material-symbols-outlined" style="font-size: 28px; margin: auto;">
+                        home
+                        </span>
+                    </a>
+                </div>
+                <div>
+                    <a href="/login" class="navButton">
+                        <span class="material-symbols-outlined" id="auth" style="font-size: 28px; margin: auto;">
+                        login
+                        </span>
+                    </a>
+                </div>
+                <div>
+                    <button id="logoutButton" class="navButton">L</button>
+                </div>
+            </div>
+        </header>
         <div id="loginPageBackground">
             <div id="loginForm">
                 <label for="username">Username</label>
@@ -24,7 +40,7 @@
                 <label for="password">Password</label> 
                 <input type="password" name="password" id="password">
                 <div>
-                    <button id="login">Log in</button> 
+                    <button id="login">Log in</button>
                     <button id="regiter">Register</button>
                 </div>
             </div>

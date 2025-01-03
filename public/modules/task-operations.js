@@ -1,8 +1,9 @@
-import * as domElement from './dom-elements.js';
+import  { getDom } from './dom-elements.js';
+const domElement = getDom('task-operations');
 
 const getAllTasks = async () => {
 
-    //await checkCookieExp();
+    await checkCookieExp();
     domElement.createTaskModal.style.display = 'flex';
     domElement.loader.style.display = 'block';
 
@@ -16,10 +17,9 @@ const getAllTasks = async () => {
         });
         if (response.ok) {
             const jsonResponse = await response.json();
-            console.log(jsonResponse);
             return jsonResponse.allTasks;
         } else {
-        throw new Error('Request failed!');
+            throw new Error('Request failed!');
         }
     } catch (error) {
         console.log(error);
@@ -107,8 +107,12 @@ async function getCookie(cname) {
 
 async function checkCookieExp() {
     let cookie = await getCookie('authorization');
-    console.log(expiration);
-    return;
+    if (cookie) {
+        return;
+    } else {
+        console.log('Auth... cookie does not exist.');
+        throw new Error('Cookie Error');
+    }
 }
 
 

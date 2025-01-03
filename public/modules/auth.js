@@ -1,13 +1,10 @@
-const username = document.getElementById('username');
-const password = document.getElementById('password');
-const loginButton = document.getElementById('login');
-const logoutButton = document.getElementById('logoutButton');
-// import {getDom} from './dom-elements.js';
+import  { getDom } from './dom-elements.js';
+const domElement = getDom('login');
+import logout from './logout.js';
 
-// const loginelements = getDom(login);
 
 // listen if login button is clicked on login page
-loginButton.addEventListener('click', async (event) => {
+domElement.loginButton.addEventListener('click', async (event) => {
     event.preventDefault();
     const u = username.value;
     const p  = password.value;
@@ -16,7 +13,7 @@ loginButton.addEventListener('click', async (event) => {
     window.location.href = '/';
 });
 
-logoutButton.addEventListener('click', async (event) => {
+domElement.logoutButton.addEventListener('click', async (event) => {
     event.preventDefault();
     await logout();
     console.log('user is logged out');
@@ -45,22 +42,6 @@ async function login (u, p){
         console.log(errorMessage);
         throw new Error('Request failed!', errorMessage.error);
     } catch (error) {
-        console.log(error);
-    }
-}
-
-export async function logout() {
-    try {
-        const response = await fetch('/api/logout');
-        if (response.ok) {
-            const jsonResponse = await response.json();
-            console.log(jsonResponse.message);
-            return;
-        } 
-        console.log('could not log out');
-        throw new Error('Request failed!');
-    }
-    catch (error) {
         console.log(error);
     }
 }

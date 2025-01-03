@@ -1,7 +1,8 @@
+import  { getDom } from './modules/dom-elements.js';
+const domElement = getDom('home');
 import { getAllTasks, addTask } from './modules/task-operations.js';
-import * as domElement from './modules/dom-elements.js';
 import { constructTaskElement } from './modules/task-construct.js';
-//import { logout } from './modules/auth.js';
+import logout from './modules/logout.js';
 
 // Import color palette for task constructor
 const colorPalette = domElement.colorPalette;
@@ -64,7 +65,7 @@ domElement.addTaskButton.addEventListener('click', async (event) => {
         header: validated.header.value, 
         description: validated.description.value, 
         color: validated.color.value 
-    });
+    }, domElement.taskBoard);
 });
 
 domElement.logoutButton.addEventListener('click', async (event) => {

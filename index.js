@@ -2,24 +2,24 @@ import express from 'express';
 import * as path from 'path';
 import * as dbActions from './database.js';
 import jwt from 'jsonwebtoken';
-
+import getCookie from './cookie-operations.js';
 
 const PORT = 4001;
 
 const app = express();
 
-app.use(express.static(path.join(import.meta.dirname, 'public')));
+app.use(express.static(path.join(import.meta.dirname, '/public')));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 
 // Authorization middleware with JWT validation
 const authorize = (req, res, next) => {
-    const token = req.headers['authorization'];// || getCookie(req, 'authprization');
+    const token = req.headers['authorization'] || getCookie(req.rawHeaders, 'authorization');
     if (!token) {
       return res.redirect('/login');
     }
-  
+
     jwt.verify(token, 'secret', (err) => {
       if (err) {
         console.log(err);
@@ -31,7 +31,7 @@ const authorize = (req, res, next) => {
 
 
 
-app.get('/', (req, res) => {
+app.get('/', authorize, (req, res) => {
     res.sendFile('home.html', { root: path.join(import.meta.dirname, '/public') });
 });
 

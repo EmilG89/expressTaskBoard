@@ -1,4 +1,5 @@
-import { taskBoard } from "./dom-elements.js";
+import  { getDom } from './dom-elements.js';
+const domElement = getDom('task-construct');
 import { deleteTask } from "./task-operations.js";
 
 export async function constructTaskElement(task) {
@@ -41,5 +42,5 @@ export async function constructTaskElement(task) {
     taskDiv.append(completeMark);
 
     // Add created task to task board grid element before last task element
-    taskBoard.insertBefore(taskDiv, taskBoard.children[taskBoard.children.length-1]);
+    domElement.taskBoard.insertBefore(taskDiv, domElement.taskBoard.children[domElement.taskBoard.children.length-1]);
 }
